@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
 int main()
 {
@@ -12,34 +13,15 @@ int main()
                             sf::State::Windowed,
                             settings);
 
-    sf::CircleShape shape(50.0f, 8);
-    shape.setFillColor(sf::Color::Green);
-    shape.setPosition(sf::Vector2f{400.0f, 10.0f});
-    shape.setOutlineThickness(5.f);
-    shape.setOutlineColor(sf::Color::Blue);
+    // ------------------------- LOAD ------------------------------------
+    sf::Texture playerTexture;
+    playerTexture.loadFromFile("Assets/Player/Textures/male_spritesheet.png");
+	sf::Sprite playerSprite(playerTexture);
+    // IntRect: {X, Y}, {width, height}
+    int XIndex{}, YIndex{};
+    playerSprite.setTextureRect(sf::IntRect({ XIndex * 64, YIndex * 64 }, { 64, 64 }));
+    playerSprite.scale(sf::Vector2f(2, 2));
 
-    sf::RectangleShape rectangle(sf::Vector2f(100.f, 50.f));
-    rectangle.setPosition(sf::Vector2f(100.f, 300.f));
-    //rectangle.setFillColor(sf::Color::Blue);
-    sf::Texture wood("texture/Wood_259S.jpg");
-    rectangle.setTexture(&wood);
-    rectangle.setOrigin(rectangle.getSize() / 2.0f);
-    rectangle.setRotation(sf::degrees(45));
-
-
-    sf::RectangleShape rectangleBack(sf::Vector2f(100.f, 1.f));
-    rectangleBack.setPosition(sf::Vector2f(100.f, 300.f));
-    rectangleBack.setFillColor(sf::Color::Magenta);
-    //rectangleBack.setOutlineColor(sf::Color::Red);
-    rectangleBack.setOrigin(rectangleBack.getSize() / 2.0f);
-    rectangleBack.setOutlineThickness(2.0f);
-
-    //// triangle
-    //sf::CircleShape triangle(80.f, 3);
-    //triangle.setFillColor(sf::Color::Black);
-
-    //// diamond
-    //sf::CircleShape triangle(80.f, 4);
 
     // ------------------------- INITIALIZE ------------------------------
 
@@ -52,11 +34,23 @@ int main()
                 window.close();
         }
 
+        // Move player by WSAD
+		sf::Vector2f position = playerSprite.getPosition();
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D))
+			playerSprite.setPosition(position + sf::Vector2f(1, 0));
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A))
+			playerSprite.setPosition(position + sf::Vector2f(-1, 0));
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W))
+			playerSprite.setPosition(position + sf::Vector2f(0, -1));
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::S))
+			playerSprite.setPosition(position + sf::Vector2f(0, 1));
+
 		// ------------------------- DRAW ------------------------------
         window.clear(sf::Color::White);
-        window.draw(shape);
-        window.draw(rectangleBack);
-        window.draw(rectangle);
+        window.draw(playerSprite);
         window.display();
     }
 }
